@@ -88,6 +88,7 @@ class ItemBuy : public Item{
     public:
         ItemBuy(int id, string name,int price,int quantity);
         int getQuantity();
+        void setQuantity(int quantity);
 };
 ItemBuy::ItemBuy(int id, string name,int price,int quantity):Item(name,price){
     this->id = id;
@@ -98,6 +99,10 @@ ItemBuy::ItemBuy(int id, string name,int price,int quantity):Item(name,price){
 
 int ItemBuy::getQuantity(){
     return this->quantity;
+}
+
+void ItemBuy::setQuantity(int quantity){
+    this->quantity = quantity;
 }
 
 class table{
@@ -367,9 +372,8 @@ class Staff : public Manage{
         void displayBill(table table);
         void addItem(table &table);
         void displayItemsBought(table table);
-        // void reviseName(Item &x);
-        // void revisePrice(Item &x);
-        // void reviseItem();
+        void displayItem(ItemBuy x);
+        void reviseItem(table &table);
         // void delectItem();
         
         // void displayItem(Item x);
@@ -450,7 +454,7 @@ void Staff::addItem(table &table){
             do{
                 cout<<"-----------------------------------------------------------"<<endl;
                 cout<<"1. Continue Add Another Item"<<endl;
-                cout<<"0. Return Table menu"<<endl;
+                cout<<"0. Return Staff Menu"<<endl;
                 cout<<"Your choice: ";
                 cin>>choice;
             }while(choice <0 || choice>1);
@@ -466,6 +470,12 @@ void Staff::addItem(table &table){
             }
         }
     }
+}
+
+void Staff::displayItem(ItemBuy x){
+     cout<<"-----------------------------------------------------------------------"<<endl;
+    cout<<"Id\t\tName\t\tPrice (vnd)\t\tQuantity"<<endl;
+    cout<<x.getID()<<"\t\t"<<x.getName()<<"\t\t"<<x.getPrice()<<"\t\t\t"<<x.getQuantity()<<endl;
 }
 
 void Staff::displayBill(table table){
@@ -495,8 +505,50 @@ void Staff::displayBill(table table){
 
 void Staff::displayItemsBought(table table){
     int choice;
+    this->displayBill(table); 
+}
+
+void Staff::reviseItem(table &table){
+    int id;
+    int quantity;
+    int choice = 2;
+    again:
     this->displayBill(table);
-   
+    again2:
+    cout<<"Revise ID: ";
+    cin>>id;
+    for(auto &x: table.bill)
+    {
+        if(x.getID() == id) 
+        {
+            this->displayItem(x);
+            cout<<"Revise Quantity: ";
+            cin>>quantity;
+            x.setQuantity(quantity);
+            this->displayItem(x);
+            do{
+                cout<<"-----------------------------------------------------------"<<endl;
+                cout<<"1. Continue Revise"<<endl;
+                cout<<"0. Return Staff Menu"<<endl;
+                cout<<"Your choice: ";
+                cin>>choice;
+            }while(choice <0 || choice>1);
+            switch (choice)
+            {
+            case 0:
+                this->returnOption = 2;
+                break;
+            case 1:
+                goto again;
+            default:
+                break;
+            }
+        }
+    }
+        if(choice == 3){
+        cout<<"ID doesn't exist"<<endl;
+        goto again2;
+    }
 }
 void Staff::chooseMenuStaff(){
     switch (this->choiceOption)
@@ -504,9 +556,9 @@ void Staff::chooseMenuStaff(){
         case 1:
             addItem(listTables[currentTable]);
             break;
-        // case 2:
-        //     reviseItem(listTables[currentTable].bill);
-        //     break;
+        case 2:
+            reviseItem(listTables[currentTable]);
+            break;
         // case 3:
         //     delectItem(listTables[currentTable].bill);
         //     break;
