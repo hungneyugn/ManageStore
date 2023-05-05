@@ -7,7 +7,7 @@ using namespace std;
 *Description: This class represents a basic implementation of a Item object.
 */
 class Item{
-    private:
+    protected:
         int id;
         string name;
         int price;
@@ -82,11 +82,29 @@ void Item::setPrice(int price){
     this->price = price;
 }
 
+class ItemBuy : public Item{
+    private:
+        int quantity;
+    public:
+        ItemBuy(int id, string name,int price,int quantity);
+        int getQuantity();
+};
+ItemBuy::ItemBuy(int id, string name,int price,int quantity):Item(name,price){
+    this->id = id;
+    this->name = name;
+    this->price = price;
+    this->quantity = quantity;
+}
+
+int ItemBuy::getQuantity(){
+    return this->quantity;
+}
+
 class table{
     private:
         bool status;
     public:
-        vector<Item>bill;
+        vector<ItemBuy>bill;
         table();
         void setStatus(bool status);
         bool getStatus();
@@ -102,8 +120,9 @@ bool table::getStatus(){
     return this->status;
 }
 void table::payMent(){
-
+    
 }
+
 /*
 *Class: Manage
 *Description: This class represents a basic implementation of a Manage object.
@@ -112,10 +131,10 @@ class Manage{
     protected:
         int* numberOfTable;
         int choiceOption;
-        vector<Item>listItems;
+        vector<Item> *listItems;
     public:
         bool returnOption;
-        Manage(vector<Item>listItems,int &numberOfTable);
+        Manage(vector<Item> &listItems,int &numberOfTable);
         // Manage(int &numberOfTable);
         void displayMenuManage();
         void chooseManage();
@@ -128,9 +147,8 @@ class Manage{
         void displayItem(Item x);
         void setTable();
 };
-Manage :: Manage(vector<Item>listItems,int &numberOfTable){
-// Manage :: Manage(int &numberOfTable){
-    this->listItems = listItems;
+Manage :: Manage(vector<Item> &listItems,int &numberOfTable){
+    this->listItems = &listItems;
     this->numberOfTable = &numberOfTable;
 }
 void Manage::displayMenuManage(){
@@ -187,7 +205,7 @@ void Manage::addItem(){
     cout<<"Price: ";
     cin>>price;
     Item newItem(name,price);
-    this->listItems.push_back(newItem);
+    this->listItems->push_back(newItem);
     displayList();
     do{
         cout<<"-----------------------------------------------------------"<<endl;
@@ -228,7 +246,7 @@ void Manage::reviseItem(){
     again:
     cout<<"Revise ID: ";
     cin>>id;
-    for(auto &x:listItems)
+    for(auto &x:*listItems)
     {
         if(x.getID() == id) 
         {
@@ -265,16 +283,16 @@ void Manage::delectItem(){
     cout<<"-------------------------"<<endl;
     displayList();
     again:
-    if(listItems.size() != 0){
+    if(listItems->size() != 0){
         cout<<"Remove ID: ";
         cin>>id;
-        for(int i = 0; i<listItems.size();i++)
+        for(int i = 0; i<listItems->size();i++)
         {
-            if(listItems[i].getID() == id) 
+            if ((*listItems)[i].getID() == id)
             {
-                listItems.erase(listItems.begin()+i);
+                listItems->erase(listItems->begin()+i);
                 displayList();
-                if(listItems.size() != 0){
+                if(listItems->size() != 0){
                     cout<<"1. Continue remove"<<endl;
                     cout<<"0. Return menu manage"<<endl;
                     do{
@@ -306,13 +324,13 @@ void Manage::displayItem(Item x){
 void Manage::displayList(){
     int choice;
     cout<<"-----------------------------------------------------------"<<endl;
-    if(listItems.size() == 0)cout<<"List Is Empty!!!"<<endl;
+    if(listItems->size() == 0)cout<<"List Is Empty!!!"<<endl;
     else
     {
         int i = 0;
         cout<<"List Of Items"<<endl;
         cout<<"Number\t\tId\t\tName\t\tPrice (vnd)"<<endl;
-       for(auto x:listItems)
+       for(auto x:*listItems)
        {
             i++;
             cout<<i<<"\t\t"<<x.getID()<<"\t\t"<<x.getName()<<"\t\t"<<x.getPrice()<<endl;
@@ -336,34 +354,32 @@ class Staff : public Manage{
     private:
         int numberOfTable;
         int currentTable;
-        vector<table>listTables; 
-        vector<Item>listItems;
+        vector<table> listTables; 
+        vector<Item> *listItems;
         int choiceMenu;
     public:
-        Staff(vector<Item>listItems,int numberOfTable);
-        // Staff(int numberOfTable);
-        bool returnOption;
+        Staff(vector<Item> &listItems,int numberOfTable);
+        int returnOption;
         void displayStatusTable();
         void chooseTable();
         void displayMenuStaff();
         void chooseMenuStaff();
-        void addItem(vector<Item>&list);
+        void displayBill(table table);
+        void addItem(table &table);
+        void displayItemsBought(table table);
         // void reviseName(Item &x);
         // void revisePrice(Item &x);
         // void reviseItem();
         // void delectItem();
-        // void displayList();
+        
         // void displayItem(Item x);
         // void setTable(); 
 
 };
-Staff::Staff(vector<Item>listItems,int numberOfTable):Manage(listItems,numberOfTable){
-// Staff::Staff(int numberOfTable):Manage(listItems,numberOfTable){
-// Staff::Staff(int numberOfTable):Manage(numberOfTable){
-    // this->listItems = listItems;
-    // this->listItems = listItems;
+
+Staff::Staff(vector<Item> &listItems,int numberOfTable):Manage(listItems,numberOfTable){
+    this->listItems = &listItems;
     this->numberOfTable = numberOfTable;
-    this->listTables = listTables;
     listTables.resize(numberOfTable);
     this->currentTable = 0;
 }
@@ -381,18 +397,18 @@ void Staff::displayStatusTable(){
         else cout<<"\t"<<"X"<<"\t|";
     }
     cout<<"\n\n"; 
-    chooseTable();
 }
 void Staff::chooseTable(){
     do{
         cout<<"Choose Table: ";
         cin>>this->currentTable;
-    }while(listTables[currentTable].getStatus()== 1 || this->currentTable > numberOfTable);
-    listTables[currentTable].setStatus(1);
+    }while(this->currentTable > numberOfTable);
+    if(listTables[currentTable - 1].getStatus() == 0) listTables[currentTable - 1].setStatus(1);
     displayMenuStaff();
 }
 
 void Staff::displayMenuStaff(){
+    again:
     cout<<"-------------------------"<<endl;
     cout<<"Table "<<this->currentTable<<":"<<endl;
     cout<<"-------------------------"<<endl;
@@ -401,43 +417,110 @@ void Staff::displayMenuStaff(){
     cout<<"3. Remove Item"<<endl;
     cout<<"4. List of Item"<<endl;
     cout<<"5. Cash PayMent"<<endl;
-    cout<<"0. Back to main menu"<<endl;
+    cout<<"0. Back to Table Status"<<endl;
     do{
         cout<<"Enter your choice: ";
         cin>>this->choiceOption;
     }while(this->choiceOption<0 || this->choiceOption>5 ); 
     chooseMenuStaff();
+    if(this->returnOption == 2) goto again;
 }
 
-void Staff::addItem(vector<Item>&list){
+void Staff::addItem(table &table){
+    again:
+    int quantity;
+    int id;
+    int choice;
     cout<<"-------------------------"<<endl;
     cout<<"\tAdd Item"<<endl;
     cout<<"-------------------------"<<endl;
     displayList();
+    cout<<"Choose Item ID: ";
+    cin>>id;
+    for(auto x:*listItems)
+    {
+        if(x.getID() == id)
+        {
+            cout<<"You choosed "<<x.getName()<<endl;
+            cout<<"Please Enter Quantity: ";
+            cin>>quantity;
+            ItemBuy newItem(id,x.getName(),x.getPrice(),quantity);
+            table.bill.push_back(newItem);
+            this->displayBill(table);
+            do{
+                cout<<"-----------------------------------------------------------"<<endl;
+                cout<<"1. Continue Add Another Item"<<endl;
+                cout<<"0. Return Table menu"<<endl;
+                cout<<"Your choice: ";
+                cin>>choice;
+            }while(choice <0 || choice>1);
+            switch (choice)
+            {
+            case 0:
+                this->returnOption = 2;
+                break;
+            case 1:
+                goto again;
+            default:
+                break;
+            }
+        }
+    }
+}
+
+void Staff::displayBill(table table){
+    int choice;
+    cout<<"-------------------------------------------------------------------------"<<endl;
+    if(table.bill.size() == 0)cout<<"List Is Empty!!!"<<endl;
+    else
+    {
+        int i = 0;
+        cout<<"List Of Items"<<endl;
+        cout<<"Number\t\tId\t\tName\t\tPrice (vnd)\t\tQuantity"<<endl;
+       for(auto x:table.bill)
+       {
+            i++;
+            cout<<i<<"\t\t"<<x.getID()<<"\t\t"<<x.getName()<<"\t\t"<<x.getPrice()<<"\t\t\t"<<x.getQuantity()<<endl;
+       }
+    }
+     if(this->choiceOption == 4){
+        do{
+            cout<<"Press 0 to return Menu Manage: ";
+            cin>>choice;
+            this->returnOption = 1;
+        }while(choice != 0);
+    }
+};
+
+
+void Staff::displayItemsBought(table table){
+    int choice;
+    this->displayBill(table);
+   
 }
 void Staff::chooseMenuStaff(){
     switch (this->choiceOption)
     {
-    case 1:
-        addItem(listTables[currentTable].bill);
-        break;
-    // case 2:
-    //     reviseItem(listTables[currentTable].bill);
-    //     break;
-    // case 3:
-    //     delectItem(listTables[currentTable].bill);
-    //     break;
-    // case 4:
-    //     displayList(listTables[currentTable].bill);
-    //     break;
-    // case 5:
-    //     listTables[currentTable].payMent();
-    //     break;
-    // case 0:
-    //     this->returnOption = 0;
-    //     break;
-    default:
-        break;
+        case 1:
+            addItem(listTables[currentTable]);
+            break;
+        // case 2:
+        //     reviseItem(listTables[currentTable].bill);
+        //     break;
+        // case 3:
+        //     delectItem(listTables[currentTable].bill);
+        //     break;
+        case 4:
+           displayBill(listTables[currentTable]);
+            break;
+        // case 5:
+        //     listTables[currentTable].payMent();
+        //     break;
+        case 0:
+            this->returnOption = 1;
+            break;
+        default:
+            break;
     }
 }
 class mainMenu{
@@ -484,18 +567,17 @@ void mainMenu::chooseMenu(){
     }
 }
 void mainMenu::menuManage(){
-    Manage menu(this->listItems,this->numberOfTable);
-    // static Manage menu(this->numberOfTable);
+   static Manage menu(this->listItems,this->numberOfTable);
     again:
         menu.displayMenuManage();
         menu.chooseManage();
         if(menu.returnOption == 1)goto again;       
 }
 void mainMenu::menuStaff(){
-    Staff menu(this->listItems,this->numberOfTable);
-    // static Staff menu(this->numberOfTable);
+    static Staff menu(this->listItems,this->numberOfTable);
     again:
         menu.displayStatusTable();
+        menu.chooseTable();
         if(menu.returnOption == 1)goto again;
 }
 
