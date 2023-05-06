@@ -319,6 +319,7 @@ void Manage::delectItem(){
     }
 }
 void Manage::displayItem(Item x){
+    cout<<"-----------------------------------------------------------"<<endl;
     cout<<"Id\t\tName\t\tPrice (vnd)"<<endl;
     cout<<x.getID()<<"\t\t"<<x.getName()<<"\t\t"<<x.getPrice()<<endl;
 }
@@ -445,7 +446,7 @@ void Staff::addItem(table &table){
             table.bill.push_back(newItem);
             this->displayBill(table);
             do{
-                cout<<"-----------------------------------------------------------"<<endl;
+                cout<<"--------------------------------------------------------------------------------"<<endl;
                 cout<<"1. Continue Add Another Item"<<endl;
                 cout<<"0. Return Staff Menu"<<endl;
                 cout<<"Your choice: ";
@@ -473,7 +474,7 @@ void Staff::displayItem(ItemBuy x){
 
 void Staff::displayBill(table table){
     int choice;
-    cout<<"-------------------------------------------------------------------------"<<endl;
+    cout<<"--------------------------------------------------------------------------------"<<endl;
     if(table.bill.size() == 0)cout<<"List Is Empty!!!"<<endl;
     else
     {
@@ -488,7 +489,7 @@ void Staff::displayBill(table table){
     }
      if(this->choiceOption == 4){
         do{
-            cout<<"Press 0 to return Menu Manage: ";
+            cout<<"Press 0 to return Staff Menu: ";
             cin>>choice;
             this->returnOption = 2;
         }while(choice != 0);
@@ -520,7 +521,7 @@ void Staff::reviseItem(table &table){
             x.setQuantity(quantity);
             this->displayItem(x);
             do{
-                cout<<"-----------------------------------------------------------"<<endl;
+                cout<<"--------------------------------------------------------------------------------"<<endl;
                 cout<<"1. Continue Revise"<<endl;
                 cout<<"0. Return Staff Menu"<<endl;
                 cout<<"Your choice: ";
@@ -562,6 +563,7 @@ void Staff::delectItem(table &table){
                 table.bill.erase( table.bill.begin()+i);
                 this->displayBill(table);
                 if(table.bill.size() != 0){
+                    cout<<"--------------------------------------------------------------------------------"<<endl;
                     cout<<"1. Continue Remove"<<endl;
                     cout<<"0. Return Staff Menu"<<endl;
                     do{
