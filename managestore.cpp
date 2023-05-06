@@ -1,3 +1,9 @@
+/*
+*File: managestore.cpp
+*Author: Nguyen Phi Hung
+*Date: 26/04/2023
+*Description: program manager store
+*/
 #include<iostream>
 #include<vector>
 #include<string>
