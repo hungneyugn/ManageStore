@@ -82,6 +82,10 @@ void Item::setPrice(int price){
     this->price = price;
 }
 
+/*
+*Class: ItemBuy
+*Description: This class represents a basic implementation of a ItemBuy object, used in staff fuction.
+*/
 class ItemBuy : public Item{
     private:
         int quantity;
@@ -90,6 +94,16 @@ class ItemBuy : public Item{
         int getQuantity();
         void setQuantity(int quantity);
 };
+
+/*
+*Contructor: ItemBuy
+*Discription: This constructor initializes a new instance of the ItemBuy class.
+*Input:
+*   id: id of item
+*   name: name of item
+*   price: price of item
+*   quantity: quantity of bought item
+*/
 ItemBuy::ItemBuy(int id, string name,int price,int quantity):Item(name,price){
     this->id = id;
     this->name = name;
@@ -97,26 +111,57 @@ ItemBuy::ItemBuy(int id, string name,int price,int quantity):Item(name,price){
     this->quantity = quantity;
 }
 
+/*
+*Function: getQuantity
+*Description: This function get quantity of bought Item
+*Input: none
+*Output: number of Item
+*/
 int ItemBuy::getQuantity(){
     return this->quantity;
 }
 
+/*
+*Function: setQuantity
+*Description: This function set quantity of bought Item
+*Input:
+*   quantity: number of Item
+*Output: none
+*/
 void ItemBuy::setQuantity(int quantity){
     this->quantity = quantity;
 }
 
+/*
+*Class: table
+*Description: This class represents a basic implementation of a table object
+*/
 class table{
     private:
+        /*variable save state of table
+        * 0: table is empty
+        * 1: table is occupied
+        */
         bool status;
     public:
+        /*one table has a bill*/
         vector<ItemBuy>bill;
         table();
         void setStatus(bool status);
         bool getStatus();
 };
+
+/*
+*Contructor: ItemBuy
+*Discription: This constructor initializes a new instance of the table class.
+*Input: none
+*Output: none
+*/
 table::table(){
+    /*initial state of table is empty*/
     status = 0;
 }
+
 void table::setStatus(bool status){
     this->status = status;
 }
@@ -136,7 +181,6 @@ class Manage{
     public:
         bool returnOption;
         Manage(vector<Item> &listItems,int &numberOfTable);
-        // Manage(int &numberOfTable);
         void displayMenuManage();
         void chooseManage();
         void addItem();
