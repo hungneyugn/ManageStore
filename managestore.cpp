@@ -113,7 +113,6 @@ class table{
         table();
         void setStatus(bool status);
         bool getStatus();
-        void payMent();
 };
 table::table(){
     status = 0;
@@ -123,9 +122,6 @@ void table::setStatus(bool status){
 }
 bool table::getStatus(){
     return this->status;
-}
-void table::payMent(){
-    
 }
 
 /*
@@ -375,10 +371,7 @@ class Staff : public Manage{
         void displayItem(ItemBuy x);
         void reviseItem(table &table);
         void delectItem(table &table);
-        
-        // void displayItem(Item x);
-        // void setTable(); 
-
+        void paymentItem(table &table);
 };
 
 Staff::Staff(vector<Item> &listItems,int numberOfTable):Manage(listItems,numberOfTable){
@@ -407,7 +400,7 @@ void Staff::chooseTable(){
         cout<<"Choose Table: ";
         cin>>this->currentTable;
     }while(this->currentTable > numberOfTable);
-    if(listTables[currentTable - 1].getStatus() == 0) listTables[currentTable - 1].setStatus(1);
+    if(listTables[currentTable - 1].bill.size() == 0 ) listTables[currentTable - 1].setStatus(1);
     displayMenuStaff();
 }
 
@@ -597,24 +590,46 @@ void Staff::delectItem(table &table){
         }
     }
 }
+void Staff::paymentItem(table &table){
+    int payment;
+    int choice;
+    cout<<"-----------------------------------------------------------"<<endl;
+    cout<<"Payment"<<endl;
+    cout<<"-----------------------------------------------------------"<<endl;
+    displayBill(table);
+    for(auto x:table.bill)
+    {
+        payment += x.getPrice()*x.getQuantity();
+    } 
+    cout<<"PAYMENT\t\t\t\t\t\t\t\t\t"<<payment<<endl;
+    do{
+        cout<<"Press 0 to return Menu Manage: ";
+        cin>>choice;
+    }while(choice != 0);
+    table.bill.clear();
+    cout<<table.getStatus()<<endl;
+    table.setStatus(0);
+    cout<<table.getStatus()<<endl;
+    this->returnOption = 2;
+}
 void Staff::chooseMenuStaff(){
     switch (this->choiceOption)
     {
         case 1:
-            addItem(listTables[currentTable]);
+            addItem(listTables[currentTable-1]);
             break;
         case 2:
-            reviseItem(listTables[currentTable]);
+            reviseItem(listTables[currentTable-1]);
             break;
         case 3:
-            delectItem(listTables[currentTable]);
+            delectItem(listTables[currentTable-1]);
             break;
         case 4:
-           displayBill(listTables[currentTable]);
+           displayBill(listTables[currentTable-1]);
             break;
-        // case 5:
-        //     listTables[currentTable].payMent();
-        //     break;
+        case 5:
+            paymentItem(listTables[currentTable-1]);
+            break;
         case 0:
             this->returnOption = 1;
             break;
