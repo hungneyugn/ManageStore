@@ -162,9 +162,23 @@ table::table(){
     status = 0;
 }
 
+/*
+*Function: setStatus
+*Description: This function set state of table
+*Input:
+    status: variable save state of table
+*Output: none
+*/
 void table::setStatus(bool status){
     this->status = status;
 }
+
+/*
+*Function: getStatus
+*Description: This function get state of table
+*Input:none
+*Output: state of table
+*/
 bool table::getStatus(){
     return this->status;
 }
@@ -175,10 +189,13 @@ bool table::getStatus(){
 */
 class Manage{
     protected:
+        /*variable save number of table which was set by manager*/
         int* numberOfTable;
         int choiceOption;
+        /*list save items in menu which added by manager*/
         vector<Item> *listItems;
     public:
+        /*variable save level to return menu*/
         bool returnOption;
         Manage(vector<Item> &listItems,int &numberOfTable);
         void displayMenuManage();
@@ -192,10 +209,25 @@ class Manage{
         void displayItem(Item x);
         void setTable();
 };
+/*
+*Contructor: Manage
+*Discription: This constructor initializes a new instance of the Manage class.
+*Input:
+*   listItems: address of vector list items
+*   numberOfTable: addess of variable saving number of table
+*Output: none
+*/
 Manage :: Manage(vector<Item> &listItems,int &numberOfTable){
     this->listItems = &listItems;
     this->numberOfTable = &numberOfTable;
 }
+
+/*
+*Function: displayMenuManage
+*Description: This function display options of the manager
+*Input:none
+*Output: none
+*/
 void Manage::displayMenuManage(){
     cout<<"-------------------------"<<endl;
     cout<<"\tMenu Manage"<<endl;
@@ -237,6 +269,13 @@ void Manage::chooseManage(){
         break;
     }
 }
+
+/*
+*Function: addItem
+*Description: This function add new item to menu
+*Input:none
+*Output: none
+*/
 void Manage::addItem(){
     again:
     string name;
@@ -249,7 +288,9 @@ void Manage::addItem(){
     cin>>name;
     cout<<"Price: ";
     cin>>price;
+    /*generate new item with iput name and price*/
     Item newItem(name,price);
+    /*add to list item (menu)*/
     this->listItems->push_back(newItem);
     displayList();
     do{
@@ -270,6 +311,14 @@ void Manage::addItem(){
         break;
     }
 }
+
+/*
+*Function: reviseName
+*Description: This function revises name of item in menu
+*Input:
+    x: item
+*Output: none
+*/
 void Manage::reviseName(Item &x){
     string name;
     cout<<"New Name: ";
@@ -277,6 +326,14 @@ void Manage::reviseName(Item &x){
     x.setName(name);
     displayItem(x);
 }
+
+/*
+*Function: revisePrice
+*Description: This function revises price of item in menu
+*Input:
+    x: item
+*Output: none
+*/
 void Manage::revisePrice(Item &x){
     int price;
     cout<<"New Price: ";
@@ -284,13 +341,23 @@ void Manage::revisePrice(Item &x){
     x.setPrice(price);
     displayItem(x);
 }
+
+/*
+*Function: reviseItem
+*Description: This function revises item in menu
+*Input:
+    x: item
+*Output: none
+*/
 void Manage::reviseItem(){
     int id;
     int choice = 3;
     displayList();
     again:
+    /*enter id of item need to be revised*/
     cout<<"Revise ID: ";
     cin>>id;
+    /*look for item by id in the list item*/
     for(auto &x:*listItems)
     {
         if(x.getID() == id) 
@@ -320,6 +387,13 @@ void Manage::reviseItem(){
         goto again;
     }
 }
+
+/*
+*Function: delectItem
+*Description: This function delect item in menu
+*Input:none
+*Output: none
+*/
 void Manage::delectItem(){
     int id;
     int choice = 3;
@@ -362,11 +436,26 @@ void Manage::delectItem(){
         }
     }
 }
+
+/*
+*Function: displayItem
+*Description: This function display information of a item in menu
+*Input: 
+*   x: item  
+*Output: none
+*/
 void Manage::displayItem(Item x){
     cout<<"-----------------------------------------------------------"<<endl;
     cout<<"Id\t\tName\t\tPrice (vnd)"<<endl;
     cout<<x.getID()<<"\t\t"<<x.getName()<<"\t\t"<<x.getPrice()<<endl;
 }
+
+/*
+*Function: displayList
+*Description: This function display information of all items in menu
+*Input: none  
+*Output: none
+*/
 void Manage::displayList(){
     int choice;
     cout<<"-----------------------------------------------------------"<<endl;
@@ -390,16 +479,30 @@ void Manage::displayList(){
         }while(choice != 0);
     }
 }
+
+/*
+*Function: setTable
+*Description: This function set number of table
+*Input:none
+*Output: none
+*/
 void Manage::setTable(){
     cout<<"-------------------------"<<endl;
     cout<<"Set Number Of Table: ";
     cin>>*this->numberOfTable;
     this->returnOption = 1;
 }
+
+/*
+*Class: Staff
+*Description: This class represents a basic implementation of a Staff object.
+*/
 class Staff : public Manage{
     private:
         int numberOfTable;
+        /*variable save numbers of table which was chosen*/
         int currentTable;
+        /*list of tables was generated with the number of table*/
         vector<table> listTables; 
         vector<Item> *listItems;
         int choiceMenu;
@@ -419,12 +522,28 @@ class Staff : public Manage{
         void paymentItem(table &table);
 };
 
+/*
+*Contructor: Staff
+*Discription: This constructor initializes a new instance of the Staff class.
+*Input:
+*   listItems: address of vector list items
+*   numberOfTable: variable saving number of table
+*Output: none
+*/
 Staff::Staff(vector<Item> &listItems,int numberOfTable):Manage(listItems,numberOfTable){
     this->listItems = &listItems;
     this->numberOfTable = numberOfTable;
+    /*resize list table with size set by manager*/
     listTables.resize(numberOfTable);
     this->currentTable = 0;
 }
+
+/*
+*Function: displayStatusTable
+*Description: This function display state of all table
+*Input:none
+*Output: none
+*/
 void Staff::displayStatusTable(){
     cout<<"Table \t|";
     for(int i = 1; i<= this->numberOfTable;i++) cout<<"\t"<<i<<"\t|";
@@ -440,6 +559,13 @@ void Staff::displayStatusTable(){
     }
     cout<<"\n\n"; 
 }
+
+/*
+*Function: chooseTable
+*Description: This function chooses table, it's made by staff
+*Input:none
+*Output: none
+*/
 void Staff::chooseTable(){
     do{
         cout<<"Choose Table: ";
@@ -449,6 +575,12 @@ void Staff::chooseTable(){
     displayMenuStaff();
 }
 
+/*
+*Function: displayMenuStaff
+*Description: This function displays options of the staff
+*Input:none
+*Output: none
+*/
 void Staff::displayMenuStaff(){
     again:
     cout<<"-------------------------"<<endl;
@@ -468,6 +600,13 @@ void Staff::displayMenuStaff(){
     if(this->returnOption == 2) goto again;
 }
 
+/*
+*Function: addItem
+*Description: This function add item to bill of the chosen table
+*Input:
+*   table: address of chosen table
+*Output: none
+*/
 void Staff::addItem(table &table){
     again:
     int quantity;
@@ -483,7 +622,7 @@ void Staff::addItem(table &table){
     {
         if(x.getID() == id)
         {
-            cout<<"You choosed "<<x.getName()<<endl;
+            cout<<"You chosen "<<x.getName()<<endl;
             cout<<"Please Enter Quantity: ";
             cin>>quantity;
             ItemBuy newItem(id,x.getName(),x.getPrice(),quantity);
@@ -510,12 +649,26 @@ void Staff::addItem(table &table){
     }
 }
 
+/*
+*Function: displayItem
+*Description: This function displays informations of the bought item
+*Input:
+*   x: bought item
+*Output: none
+*/
 void Staff::displayItem(ItemBuy x){
      cout<<"-----------------------------------------------------------------------"<<endl;
     cout<<"Id\t\tName\t\tPrice (vnd)\t\tQuantity"<<endl;
     cout<<x.getID()<<"\t\t"<<x.getName()<<"\t\t"<<x.getPrice()<<"\t\t\t"<<x.getQuantity()<<endl;
 }
 
+/*
+*Function: displayBill
+*Description: This function display information of all bought items in bill
+*Input: 
+*   table: chosen table
+*Output: none
+*/
 void Staff::displayBill(table table){
     int choice;
     cout<<"--------------------------------------------------------------------------------"<<endl;
@@ -541,11 +694,25 @@ void Staff::displayBill(table table){
 };
 
 
+/*
+*Function: displayItemsBought
+*Description: This function is a opten of staff menu to display information of all bought items in bill
+*Input: 
+*   table: chosen table
+*Output: none
+*/
 void Staff::displayItemsBought(table table){
     int choice;
     this->displayBill(table); 
 }
 
+/*
+*Function: reviseItem
+*Description: This function revises item in bill
+*Input:
+    table: addess of chosen table
+*Output: none
+*/
 void Staff::reviseItem(table &table){
     int id;
     int quantity;
@@ -562,6 +729,7 @@ void Staff::reviseItem(table &table){
             this->displayItem(x);
             cout<<"Revise Quantity: ";
             cin>>quantity;
+            /*revise Quantity*/
             x.setQuantity(quantity);
             this->displayItem(x);
             do{
@@ -589,6 +757,13 @@ void Staff::reviseItem(table &table){
     }
 }
 
+/*
+*Function: delectItem
+*Description: This function delect item in bill
+*Input:
+*   table: addess of chosen table
+*Output: none
+*/
 void Staff::delectItem(table &table){
     int id;
     int choice = 3;
@@ -604,8 +779,10 @@ void Staff::delectItem(table &table){
         {
             if (table.bill[i].getID() == id)
             {
+                /*delect item in bill*/
                 table.bill.erase( table.bill.begin()+i);
                 this->displayBill(table);
+                /*After delecting, check size of bill */
                 if(table.bill.size() != 0){
                     cout<<"--------------------------------------------------------------------------------"<<endl;
                     cout<<"1. Continue Remove"<<endl;
@@ -636,6 +813,14 @@ void Staff::delectItem(table &table){
         }
     }
 }
+
+/*
+*Function: paymentItem
+*Description: This function pay for the bill
+*Input:
+*   table: addess of chosen table
+*Output: none
+*/
 void Staff::paymentItem(table &table){
     int payment;
     int choice;
@@ -643,6 +828,7 @@ void Staff::paymentItem(table &table){
     cout<<"Payment"<<endl;
     cout<<"-----------------------------------------------------------"<<endl;
     displayBill(table);
+    /*calculate fee*/
     for(auto x:table.bill)
     {
         payment += x.getPrice()*x.getQuantity();
@@ -652,12 +838,19 @@ void Staff::paymentItem(table &table){
         cout<<"Press 0 to return Menu Manage: ";
         cin>>choice;
     }while(choice != 0);
+    /*after paying, clear the bill*/
     table.bill.clear();
-    cout<<table.getStatus()<<endl;
+    /*set free state for table*/
     table.setStatus(0);
-    cout<<table.getStatus()<<endl;
     this->returnOption = 2;
 }
+
+/*
+*Function: chooseMenuStaff
+*Description: This function choose option, made by staff
+*Input:none
+*Output: none
+*/
 void Staff::chooseMenuStaff(){
     switch (this->choiceOption)
     {
@@ -683,6 +876,11 @@ void Staff::chooseMenuStaff(){
             break;
     }
 }
+
+/*
+*Class: mainMenu
+*Description: This class represents a basic implementation of a mainMenu object.
+*/
 class mainMenu{
     private:
         int numberOfTable;
