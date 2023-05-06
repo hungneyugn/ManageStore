@@ -603,7 +603,7 @@ void Staff::paymentItem(table &table){
     {
         payment += x.getPrice()*x.getQuantity();
     } 
-    cout<<"PAYMENT\t\t\t\t\t\t\t\t\t"<<payment<<endl;
+    cout<<"PAYMENT\t\t\t\t\t\t\t\t\t"<<payment<<" (vnd)"<<endl;
     do{
         cout<<"Press 0 to return Menu Manage: ";
         cin>>choice;
