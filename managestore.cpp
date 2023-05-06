@@ -374,7 +374,7 @@ class Staff : public Manage{
         void displayItemsBought(table table);
         void displayItem(ItemBuy x);
         void reviseItem(table &table);
-        // void delectItem();
+        void delectItem(table &table);
         
         // void displayItem(Item x);
         // void setTable(); 
@@ -497,7 +497,7 @@ void Staff::displayBill(table table){
         do{
             cout<<"Press 0 to return Menu Manage: ";
             cin>>choice;
-            this->returnOption = 1;
+            this->returnOption = 2;
         }while(choice != 0);
     }
 };
@@ -550,6 +550,53 @@ void Staff::reviseItem(table &table){
         goto again2;
     }
 }
+
+void Staff::delectItem(table &table){
+    int id;
+    int choice = 3;
+    cout<<"-------------------------"<<endl;
+    cout<<"\tRemove Item"<<endl;
+    cout<<"-------------------------"<<endl;
+    this->displayBill(table);
+    again:
+    if(table.bill.size() != 0){
+        cout<<"Remove ID: ";
+        cin>>id;
+        for(int i = 0; i < table.bill.size();i++)
+        {
+            if (table.bill[i].getID() == id)
+            {
+                table.bill.erase( table.bill.begin()+i);
+                this->displayBill(table);
+                if(table.bill.size() != 0){
+                    cout<<"1. Continue Remove"<<endl;
+                    cout<<"0. Return Staff Menu"<<endl;
+                    do{
+                        cout<<"Your choice: ";
+                        cin>>choice;
+                    }while(choice < 0 || choice > 1);
+                }else 
+                {
+                    cout<<"Press 0 to return Staff Menu"<<endl;
+                    do{
+                        cout<<"Your choice: ";
+                        cin>>choice;
+                    }while(choice != 0);
+                }
+                if(choice == 1)goto again;
+                else 
+                {
+                    this->returnOption = 2;
+                    break;
+                }
+            }
+        }
+        if(choice == 3){
+            cout<<"ID doesn't exist"<<endl;
+            goto again;
+        }
+    }
+}
 void Staff::chooseMenuStaff(){
     switch (this->choiceOption)
     {
@@ -559,9 +606,9 @@ void Staff::chooseMenuStaff(){
         case 2:
             reviseItem(listTables[currentTable]);
             break;
-        // case 3:
-        //     delectItem(listTables[currentTable].bill);
-        //     break;
+        case 3:
+            delectItem(listTables[currentTable]);
+            break;
         case 4:
            displayBill(listTables[currentTable]);
             break;
