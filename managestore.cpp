@@ -243,6 +243,12 @@ void Manage::displayMenuManage(){
         cin>>this->choiceOption;
     }while(this->choiceOption<0 || this->choiceOption>5 ); 
 }
+/*
+*Function: chooseManage
+*Description: This function choose option, made by manager
+*Input:none
+*Output: none
+*/
 void Manage::chooseManage(){
     switch (this->choiceOption)
     {
@@ -893,13 +899,28 @@ class mainMenu{
         void menuManage();
         void menuStaff();
 };
+
+/*
+*Contructor: mainMenu
+*Discription: This constructor initializes a new instance of the mainMenu class.
+*Input: none
+*Output: none
+*/
 mainMenu::mainMenu(){
+    /*set number of table = 1, it will be revised by manager*/
     this->numberOfTable = 1;
     again:
     displayMainMenu();
     chooseMenu();
     goto again;
 }
+
+/*
+*Function: displayMainMenu
+*Description: This function display main menu
+*Input:none
+*Output: none
+*/
 void mainMenu::displayMainMenu(){
     cout<<"-------------------------"<<endl;
     cout<<"\tMain Menu"<<endl;
@@ -911,6 +932,13 @@ void mainMenu::displayMainMenu(){
         cin>>this->choiceMenu;
     }while(this->choiceMenu != 1 && this->choiceMenu != 2); 
 }
+
+/*
+*Function: chooseMenu
+*Description: This function choose option in main menu
+*Input:none
+*Output: none
+*/
 void mainMenu::chooseMenu(){
     switch (this->choiceMenu)
     {
@@ -924,6 +952,13 @@ void mainMenu::chooseMenu(){
             break;
     }
 }
+
+/*
+*Function: menuManage
+*Description: This function call manager function
+*Input:none
+*Output: none
+*/
 void mainMenu::menuManage(){
    static Manage menu(this->listItems,this->numberOfTable);
     again:
@@ -931,6 +966,13 @@ void mainMenu::menuManage(){
         menu.chooseManage();
         if(menu.returnOption == 1)goto again;       
 }
+
+/*
+*Function: menuStaff
+*Description: This function call staff function
+*Input:none
+*Output: none
+*/
 void mainMenu::menuStaff(){
     static Staff menu(this->listItems,this->numberOfTable);
     again:
